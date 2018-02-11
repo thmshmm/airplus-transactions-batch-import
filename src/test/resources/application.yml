@@ -1,0 +1,8 @@
+app:
+  import:
+    file: "sample.csv"
+    headerLines: 3
+    datePattern: "yyyy-MM-dd"
+    fieldSeparator: ";"
+    thousandsSeparator: "."
+    decimalSeparator: ","
