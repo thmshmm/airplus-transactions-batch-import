@@ -4,7 +4,7 @@ import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import java.beans.PropertyEditorSupport;
 import java.math.BigDecimal;
@@ -30,7 +30,7 @@ public class AirplusTransactionFileReader extends FlatFileItemReader<AirplusTran
 
     public AirplusTransactionFileReader init() {
         setLinesToSkip(headerLines);
-        setResource(new ClassPathResource(importFile));
+        setResource(new FileSystemResource(importFile));
         setLineMapper(new DefaultLineMapper<AirplusTransaction>() {{
             setLineTokenizer(new DelimitedLineTokenizer(fieldSeparator) {{
                 setNames(new String[]{"cardNo", "invoiceNo", "invoiceDate", "invoiceItemNo", "purchaseDate", "entryDate", "serviceProvider", "serviceDescription", "currency", "amount", "debitCredit",});

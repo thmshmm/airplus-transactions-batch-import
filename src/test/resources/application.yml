@@ -1,6 +1,8 @@
+logging:
+  config: "file:src/test/resources/logback.xml"
 app:
   import:
-    file: "sample.csv"
+    file: "src/test/resources/sample.csv"
     headerLines: 3
     datePattern: "yyyy-MM-dd"
     fieldSeparator: ";"
