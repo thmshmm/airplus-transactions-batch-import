@@ -34,7 +34,7 @@ Create logback.xml
     <root level="error">
         <appender-ref ref="STDOUT" />
     </root>
-    <logger name="de.thmshmm.airplus" level="debug">
+    <logger name="de.thmshmm.airplus" level="debug" additivity="false">
         <appender-ref ref="STDOUT" />
     </logger>
 </configuration>
