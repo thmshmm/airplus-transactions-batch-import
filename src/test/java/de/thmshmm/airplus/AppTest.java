@@ -8,23 +8,32 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.inject.Inject;
+import javax.sql.DataSource;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.Currency;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
+@RunWith(SpringJUnit4ClassRunner.class)
 public class AppTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(AppTest.class);
+
+    @Inject
+    private DataSource dataSource;
 
     @Inject
     private Environment env;
@@ -120,5 +129,35 @@ public class AppTest {
         assertEquals(new BigDecimal(1000), processedDebitTransaction.getAmount());
         assertEquals(new Character('C'), processedCreditTransaction.getDebitCredit());
         assertEquals(new BigDecimal(-5.), processedCreditTransaction.getAmount());
+    }
+
+    @Test
+    public void testAirplusTransactionJdbcWriter() throws Exception {
+
+        AirplusTransactionJdbcWriter jdbcWriter = new AirplusTransactionJdbcWriter(dataSource).init();
+
+        List<AirplusTransaction> transactions = new ArrayList<>();
+        transactions.add(debitTransaction);
+        transactions.add(creditTransaction);
+
+        jdbcWriter.write(transactions);
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+        List<AirplusTransaction> result = jdbcTemplate.query(
+                "SELECT * FROM creditcard_transactions where card_no ='ABCxxxx123' ORDER BY invoice_item_no",
+                new RowMapper<AirplusTransaction>() {
+                    @Override
+                    public AirplusTransaction mapRow(ResultSet resultSet, int row) throws SQLException {
+                        AirplusTransaction transaction = new AirplusTransaction();
+                        transaction.setCardNo(resultSet.getString("card_no"));
+                        transaction.setInvoiceItemNo(resultSet.getInt("invoice_item_no"));
+                        return transaction;
+                    }
+                });
+
+        assertEquals(2, result.size());
+        assertEquals(1, result.get(0).getInvoiceItemNo());
+        assertEquals(2, result.get(1).getInvoiceItemNo());
     }
 }

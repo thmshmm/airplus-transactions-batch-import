@@ -1,3 +1,8 @@
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/payment"
+    username: postgres
+    password: postgres
 app:
   import:
 #    file: "import.csv"

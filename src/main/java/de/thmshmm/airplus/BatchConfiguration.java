@@ -7,13 +7,16 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
 import javax.inject.Inject;
+import javax.sql.DataSource;
 
 
 @Configuration
@@ -29,22 +32,27 @@ public class BatchConfiguration {
     private StepBuilderFactory stepBuilderFactory;
 
     @Inject
+    private DataSource dataSource;
+
+    @Inject
     private Environment env;
 
     @Bean
     public Job job(Step step1) throws Exception {
         return jobBuilderFactory.get("job")
+                .incrementer(new RunIdIncrementer())
                 .flow(step1)
                 .end()
                 .build();
     }
 
     @Bean
-    public Step step1(FlatFileItemReader<AirplusTransaction> reader, ItemProcessor<AirplusTransaction, AirplusTransaction> processor) {
+    public Step step1(FlatFileItemReader<AirplusTransaction> reader, ItemProcessor<AirplusTransaction, AirplusTransaction> processor, JdbcBatchItemWriter<AirplusTransaction> writer) {
         return stepBuilderFactory.get("step1")
                 .<AirplusTransaction, AirplusTransaction>chunk(10)
                 .reader(reader)
                 .processor(processor)
+                .writer(writer)
                 .build();
     }
 
@@ -63,5 +71,10 @@ public class BatchConfiguration {
     @Bean
     public ItemProcessor<AirplusTransaction, AirplusTransaction> processor() {
         return new AirplusTransactionProcessor();
+    }
+
+    @Bean
+    public JdbcBatchItemWriter<AirplusTransaction> writer() {
+        return new AirplusTransactionJdbcWriter(dataSource).init();
     }
 }

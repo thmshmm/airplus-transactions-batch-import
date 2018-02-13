@@ -99,6 +99,10 @@ public class AirplusTransaction {
         return currency;
     }
 
+    public String getCurrencyStr() {
+        return currency.getCurrencyCode();
+    }
+
     public void setCurrency(Currency currency) {
         this.currency = currency;
     }

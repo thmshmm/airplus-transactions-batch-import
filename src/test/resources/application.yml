@@ -1,5 +1,13 @@
+spring:
+  batch:
+    job:
+      enabled: false
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/payment_test"
+    username: postgres
+    password: postgres
 logging:
-  config: "file:src/test/resources/logback.xml"
+  config: "file:src/test/resources/logback-test.xml"
 app:
   import:
     file: "src/test/resources/sample.csv"
