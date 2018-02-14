@@ -3,9 +3,7 @@ spring:
     job:
       enabled: false
   datasource:
-    url: "jdbc:postgresql://localhost:5432/payment_test"
-    username: postgres
-    password: postgres
+    url: "jdbc:h2:mem:payment_test;DB_CLOSE_DELAY=-1"
 logging:
   config: "file:src/test/resources/logback-test.xml"
 app:

@@ -31,6 +31,7 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-batch', version: '1.5.10.RELEASE'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.1'
     testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.5.10.RELEASE'
+    testCompile group: 'com.h2database', name: 'h2', version: '1.4.196'
 }
 
 mainClassName = 'de.thmshmm.airplus.App'
