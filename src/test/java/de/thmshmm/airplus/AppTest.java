@@ -38,9 +38,9 @@ public class AppTest {
     @Inject
     private Environment env;
 
-    public AirplusTransaction debitTransaction;
+    private AirplusTransaction debitTransaction;
 
-    public AirplusTransaction creditTransaction;
+    private AirplusTransaction creditTransaction;
 
     @Before
     public void before() {
