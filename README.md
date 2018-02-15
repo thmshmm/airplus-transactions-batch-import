@@ -1,5 +1,15 @@
 # AirPlus Transactions Batch Import
 
+A Spring Batch application created with Spring Boot to import AirPlus Transactions into a PostgreSQL database.
+
+Lines of this format can be imported:
+```
+Card No | Invoice No | Invoice Date | Invoice-Item No | Purchase Date | Entry Date | Service Provider | Service Description | Currency | Amount | Debit/Credit
+112233xxxxxx1234;88993344;2018-01-02;6;2017-12-13;2017-12-14;Taxi 4432;Internet;EUR;88,80;S
+```
+
+The original exported file contains a few more columns which where excluded from import.
+
 ## Build application
 
 ```
